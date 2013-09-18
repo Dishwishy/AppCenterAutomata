@@ -1,5 +1,9 @@
 #test rewrapping all apps by emulating browser
 #this is not QA'd
+#the intention of this script is to grab all the apps that 
+#are already wrapped, find their wrap URL and request it
+#via mechanize, thus rewrapping everything
+
 
 import mechanize, cookielib, json, time, argparse, getpass
 

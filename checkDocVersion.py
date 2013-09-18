@@ -1,5 +1,7 @@
-#test rewrapping all apps by emulating browser
+#Pull information on what content is installed on which device
 #this is not QA'd
+#This script is meant to pull data from App Center tenant
+#and report on the document/content information on each device
 
 import mechanize, cookielib, json, time, argparse, getpass
 
