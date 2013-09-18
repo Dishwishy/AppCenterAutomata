@@ -1,0 +1,3 @@
+Random scripts to help automate some App Center tasks.
+This currently relies on Mechanize, which you can use easy_install
+to add to your python packages.
