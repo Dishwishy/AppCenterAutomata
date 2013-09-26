@@ -23,7 +23,7 @@ br = mechanize.Browser()
 #br.set_debug_responses(True)
 #br.set_debug_http(True)
 
-cj = cookielib.LWPCookieJar('disCookie')
+cj = cookielib.LWPCookieJar()
 br.set_cookiejar(cj)
 
 br.set_handle_equiv(1)
@@ -48,6 +48,8 @@ appResponse = br.open(appWebService)
 appData = appResponse.read()
 appDataJSON = json.loads(appData)
 
+print appDataJSON
+
 for x in appDataJSON['apps']:
   if x['policy']: 
     rewrapApp = x['rewrap_url']
@@ -57,4 +59,4 @@ for x in appDataJSON['apps']:
     wrapResponse = br.open(rewrapURL)
     print "Pausing for 10 seconds"
     time.sleep(10)
-   #print x['policy']
+  #print x['policy']
