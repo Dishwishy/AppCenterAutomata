@@ -4,8 +4,11 @@ from BeautifulSoup import BeautifulSoup
 import requests
 import json
 
-username = '' 
-password = '' 
+credentialFile = open('./creds.json')
+creds = json.load(credentialFile)
+
+username = creds['name']
+password = creds['pass']
 loginURL = 'https://kylechamplin.appcenterhq.com/admin/login'
 updateURL = 'https://kylechamplin.appcenterhq.com/admin/message/list'
 #create a requests session object
@@ -27,4 +30,9 @@ if(resp.status_code == 200):
 else:
   print "Authentication Error...Maybe?"
 
-print updateStream.text
+updateJSON = json.loads(updateStream.content)
+
+#messageFile o open('UpdateRaw.txt','w')
+#messageFile.write(updateJSON)
+#messageFile.close
+print updateJSON["messages"][0]["message"]
