@@ -30,9 +30,17 @@ if(resp.status_code == 200):
 else:
   print "Authentication Error...Maybe?"
 
-updateJSON = json.loads(updateStream.content)
 
-#messageFile o open('UpdateRaw.txt','w')
-#messageFile.write(updateJSON)
-#messageFile.close
-print updateJSON["messages"][0]["message"]
+messageFile = open('lastMessageTime.txt','r+')
+timeStamp = messageFile.read()
+updateJSON = json.loads(updateStream.content)
+currMsgTime = str(updateJSON["messages"][0]["date_created"])
+
+if(currMsgTime == timeStamp):
+  print "No new messages, going to sleep"
+else:
+  print currMsgTime 
+  messageFile.seek(0)
+  messageFile.write(currMsgTime) 
+  messageFile.close
+
