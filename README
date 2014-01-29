@@ -1,5 +1,5 @@
 App Center scripts to help grab app center data.
-Relies on python 2.7 and the requests module needs to be installed.
+Relies on python 2.7 and the requests library needs to be installed.
 
 Requests Info:
 http://docs.python-requests.org/en/latest/
