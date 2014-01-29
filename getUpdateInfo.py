@@ -7,10 +7,11 @@ import json
 credentialFile = open('./creds.json')
 creds = json.load(credentialFile)
 
+tenantURL = creds['baseURL']
 username = creds['name']
 password = creds['pass']
-loginURL = 'https://kylechamplin.appcenterhq.com/admin/login'
-updateURL = 'https://kylechamplin.appcenterhq.com/admin/message/list'
+loginURL = '%s/admin/login' %tenantURL
+updateURL = '%s/admin/message/list' %tenantURL
 #create a requests session object
 s = requests.Session()
 #get our session cookies, headers, etc etc
