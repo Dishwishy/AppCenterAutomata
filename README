@@ -3,3 +3,8 @@ Relies on python 2.7 and the requests module needs to be installed.
 
 Requests Info:
 http://docs.python-requests.org/en/latest/
+
+To configure the scripts, the creds.json file requires you to provide
+username
+password
+App Center hostname including https:// prefix (ex. https://myappcenterh.appcenterhq.com) 
