@@ -3,55 +3,44 @@
 #This script is meant to pull data from App Center tenant
 #and report on the document/content information on each device
 
-import mechanize, cookielib, json, time, argparse, getpass
+from BeautifulSoup import BeautifulSoup
+import requests
+import json
 
-parser = argparse.ArgumentParser(description='Tenant Info')
-parser.add_argument('--tenant', help='please enter your tenant name', required=True)
-parser.add_argument('--admin', help='enter the name of an admin account', required=True)
-args = parser.parse_args()
+credentialFile = open('./creds.json')
+creds = json.load(credentialFile)
 
-print "please enter the password for the admin account" 
-password = getpass.getpass()
+tenantURL = creds['baseURL']
+username = creds['name']
+password = creds['pass']
+loginURL = '%s/admin/login' %tenantURL
+updateURL = '%s/admin/message/list' %tenantURL
+#create a requests session object
+s = requests.Session()
+#get our session cookies, headers, etc etc
+resp = s.get(loginURL)
+soup = BeautifulSoup(resp.content)
+form = soup.form
+csrfInfo = soup.find(type="hidden")
+csrfToken = csrfInfo['value']
 
-tenantURL = "https://" + args.tenant + ".appcenterhq.com"
+authPayload = {'csrfmiddlewaretoken':csrfToken,'username':username,'password':password,'login':'Login'}
+headerUpdate = {'Content-Type':'x-www-form-urlencoded'}
 
-br = mechanize.Browser()
-#mechanize debug options
-#br.set_debug_redirects(True)
-#br.set_debug_responses(True)
-#br.set_debug_http(True)
+resp = s.post(loginURL, data=authPayload, headers=headerUpdate)
 
-cj = cookielib.LWPCookieJar('disCookie')
-br.set_cookiejar(cj)
 
-br.set_handle_equiv(1)
-br.set_handle_gzip(1)
-br.set_handle_redirect(1)
-br.set_handle_referer(1)
-br.set_handle_robots(0)
-
-br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
-
-br.addheaders = [('User-agent','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36')]
-
-tenantAdminURL = '%s/admin/apps/list' %tenantURL
-print tenantAdminURL
-r = br.open(tenantAdminURL)
-br.select_form(nr=0)
-br.form['username'] = args.admin
-br.form['password'] = password
-br.submit()
 deviceWebService = '%s/appstore/webapi1/devices/topdevices?start=0&length=500&order=name' %tenantURL
-deviceResponse = br.open(deviceWebService)
-deviceData = deviceResponse.read()
+deviceResponse = s.get(deviceWebService)
+deviceData = deviceResponse.content
 deviceDataJSON = json.loads(deviceData)
 
 for x in deviceDataJSON['devices']:
   deviceName = x['device']['name']
   deviceDataURL =  x['device']['device_inventory_url'] 
   deviceDataURL =  tenantURL + deviceDataURL
-  contentResponse = br.open(deviceDataURL)
-  contentData = contentResponse.read()
+  contentResponse = s.get(deviceDataURL)
+  contentData = contentResponse.content
   contentDataJSON = json.loads(contentData)
   for x in contentDataJSON['installed_content_versions']:
     print  deviceName + ", " + x['title'] + ", " + x['version_string']
