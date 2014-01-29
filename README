@@ -8,3 +8,7 @@ To configure the scripts, the creds.json file requires you to provide
 username
 password
 App Center hostname including https:// prefix (ex. https://myappcenterh.appcenterhq.com) 
+
+To use getUpdateInfo.py, it requires having the file "lastMessageTime.txt"
+This file is used to store the latest timestamp for the update message and
+determine if there is a newer message.
